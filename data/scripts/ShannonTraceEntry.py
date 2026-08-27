@@ -32,13 +32,13 @@ def create_trace_entry():
     """create_trace_entry
 
     struct TraceEntry {
-        uint magic;
-        uint unk1;
-        uint unk2;
-        uint unk_magic;
-        char * message;
-        uint linenum;
-        char * file;
+        uint magic;     // "DBT:"
+        uint subsystem; // subsystem / module id
+        uint level;     // trace level (severity)
+        uint unk_magic; // 0xFECDBA98
+        char * message; // printf-style format string
+        uint linenum;   // __LINE__
+        char * file;    // __FILE__
     };
     """
     handler = DataTypeConflictHandler.REPLACE_HANDLER
@@ -49,13 +49,13 @@ def create_trace_entry():
     str_ptr = bi_dtm.getPointer(bi_dtm.getDataType("/string"))
     uint_ty = bi_dtm.getDataType("/uint")
 
-    structure.add(uint_ty, 4, "magic", "")
-    structure.add(uint_ty, 4, "unk1", "")
-    structure.add(uint_ty, 4, "unk2", "")
-    structure.add(uint_ty, 4, "unk_magic", "")
-    structure.add(str_ptr, 4, "message", "")
-    structure.add(uint_ty, 4, "linenum", "")
-    structure.add(str_ptr, 4, "file", "")
+    structure.add(uint_ty, 4, "magic", "DBT:, constant")
+    structure.add(uint_ty, 4, "subsystem", "subsystem / module id")
+    structure.add(uint_ty, 4, "level", "trace level (severity)")
+    structure.add(uint_ty, 4, "unk_magic", "0xFECDBA98, constant")
+    structure.add(str_ptr, 4, "message", "printf format string")
+    structure.add(uint_ty, 4, "linenum", "__LINE__")
+    structure.add(str_ptr, 4, "file", "__FILE__")
 
     dtm.addDataType(structure, handler)
 
